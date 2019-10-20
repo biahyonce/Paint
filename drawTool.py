@@ -81,6 +81,12 @@ def drawLine(x1, y1, x2, y2, color):
     else:
         drawLineY(x1, y1, x2, y2, color)
 
+def drawSquare(x1, y1, increment, color):
+    drawLine(x1, y1, x1, y1 + increment, color)
+    drawLine(x1, y1, x1 + increment, y1, color)
+    drawLine(x1, y1 + increment, x1 + increment, y1 + increment, color)
+    drawLine(x1 + increment, y1 + increment, x1 + increment, y1, color)
+
 def drawRectangle(x1, y1, x2, y2, color):
     drawLine(x1, y1, x2, y1, color)
     drawLine(x2, y1, x2, y2, color)
@@ -139,9 +145,9 @@ if __name__ == '__main__':
                 screen.fill(WHITE)
                 x, y = event.pos
 
-                # Calcula distância entre pontos (incremento do triângulo)
+                # Calcula distância entre pontos (incremento do quadrado)
                 increment = int((((x - sX)**2) + ((y - sY)**2))**0.5)
-                drawTriangle(sX, sY, increment, RED)
+                drawSquare(sX, sY, increment, RED)
 
                 pygame.display.flip()
 
