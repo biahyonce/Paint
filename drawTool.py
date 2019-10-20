@@ -113,6 +113,11 @@ def plotCircleOctect(x1, y1, x2, y2, color):
 	screen.set_at((y1 + x2, y2 - x1), color)
 	screen.set_at((y1 + x2, x1 + y2), color)
 
+def drawTriangle(x, y, increment, color):
+    drawLine(x, y - increment, x + increment,  y + increment, color)
+    drawLine(x - increment, y + increment, x, y - increment, color)
+    drawLine(x + increment, y + increment, x - increment, y + increment, color)
+
 if __name__ == '__main__':
     sX = 0
     sY = 0
@@ -133,7 +138,11 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEMOTION and line:
                 screen.fill(WHITE)
                 x, y = event.pos
-                drawRectangle(sX, sY, x, y, RED)
+
+                # Calcula distância entre pontos (incremento do triângulo)
+                increment = int((((x - sX)**2) + ((y - sY)**2))**0.5)
+                drawTriangle(sX, sY, increment, RED)
+
                 pygame.display.flip()
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT:
