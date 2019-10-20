@@ -81,21 +81,27 @@ def drawLine(x1, y1, x2, y2, color):
     else:
         drawLineY(x1, y1, x2, y2, color)
 
+def drawRectangle(x1, y1, x2, y2, color):
+    drawLine(x1, y1, x2, y1, color)
+    drawLine(x2, y1, x2, y2, color)
+    drawLine(x2, y2, x1, y2, color)
+    drawLine(x1, y2, x1, y1, color)
+
 def drawCircle(x2, y2, r, color):
-    x = 0
-    y = r
+    x1 = 0
+    y1 = r
     d = 1 - r
 
-    plotCircleOctect(x,y, x2, y2, color)
+    plotCircleOctect(x1,y1, x2, y2, color)
 
-    while y > x:
-        if d < 0: d += (2*x) + 3
+    while y1 > x1:
+        if d < 0: d += (2*x1) + 3
         else:
-            d += 2 * (x - y) + 5
-            y = y - 1
+            d += 2 * (x1 - y1) + 5
+            y1 = y1 - 1
 
-        x = x + 1
-        plotCircleOctect(x,y, x2, y2, color)
+        x1 = x1 + 1
+        plotCircleOctect(x1, y1, x2, y2, color)
 
 def plotCircleOctect(x1, y1, x2, y2, color):
 	screen.set_at((x1 + x2, y1 + y2), color)
@@ -127,13 +133,11 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEMOTION and line:
                 screen.fill(WHITE)
                 x, y = event.pos
-
-                # Calcula a distância entre pontos (define o raio)
-                r = int((((x - sX)**2) + ((y - sY)**2))**0.5)
-                drawCircle(sX, sY, r, BLACK)
+                drawRectangle(sX, sY, x, y, RED)
                 pygame.display.flip()
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT:
                 line = False
+        
         
         pygame.display.update()
