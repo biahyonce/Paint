@@ -1,5 +1,6 @@
 import pygame
 import sys
+import numpy as np
 from pygame import gfxdraw
 
 pygame.init()
@@ -124,6 +125,12 @@ def drawTriangle(x, y, increment, color):
     drawLine(x - increment, y + increment, x, y - increment, color)
     drawLine(x + increment, y + increment, x - increment, y + increment, color)
 
+def drawCurve(p1, p2, p3, color):
+    for t in np.arange(0, 1, 0.001):
+        bx = int(p1[0] + (((1 - t) ** 2)*(p1[0] - p2[0])) + ((t**2) * (p3[0] - p1[0])))
+        by = int(p1[1] + (((1 - t) ** 2)*(p1[1] - p2[1])) + ((t**2) * (p3[1] - p1[1])))
+        screen.set_at((bx, by), color)
+
 if __name__ == '__main__':
     sX = 0
     sY = 0
@@ -145,14 +152,13 @@ if __name__ == '__main__':
                 screen.fill(WHITE)
                 x, y = event.pos
 
-                # Calcula distância entre pontos (incremento do quadrado)
+                # Calcula o incremento -> usado pra definir p1 (ponto de controle)
                 increment = int((((x - sX)**2) + ((y - sY)**2))**0.5)
-                drawSquare(sX, sY, increment, RED)
-
+                drawCurve((sX, sY), (x, y - increment), (x,y), RED)
+                
                 pygame.display.flip()
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT:
                 line = False
-        
         
         pygame.display.update()
