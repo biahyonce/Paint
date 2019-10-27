@@ -8,7 +8,6 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 
-
 screen = pygame.display.set_mode((400, 400), 0, 32)
 layer = pygame.surface.Surface((400,400))
 layer.blit(screen, (0,0))
@@ -16,6 +15,7 @@ screen.fill(WHITE)
 layer.fill(WHITE)
 
 pygame.display.flip()
+screenSize= (400,400)
 
 def drawLineX(x1, y1, x2, y2, color):
     dx = x2 - x1
@@ -136,10 +136,54 @@ def drawCurve(p1, p2, p3, color):
         by = int(p1[1] + (((1 - t) ** 2)*(p1[1] - p2[1])) + ((t**2) * (p3[1] - p1[1])))
         screen.set_at((bx, by), color)
 
+
+def floodFillRecursive(x, y, prevColor, newColor):
+    try:
+        if x < 0 or x > 400 or y < 0 or y > 400: return
+        if screen.get_at((x,y)) != prevColor: return
+
+        screen.set_at((x,y), newColor)
+
+        floodFill(x+1,y, newColor)
+        floodFill(x,y+1, newColor)
+        floodFill(x-1,y, newColor)
+        floodFill(x,y-1, newColor)
+
+    except IndexError:
+        return
+
+def floodFill(x,y, newColor):
+    try:
+        prevColor = screen.get_at((x,y))
+
+        if prevColor == newColor: return
+
+        stack = [(x,y)]
+
+        while stack:
+            x,y = stack.pop()
+            screen.set_at((x,y), newColor)
+
+            if y - 1 > 0 and screen.get_at((x, y-1)) != newColor:
+                stack.append((x, y-1))
+
+            if y + 1 < screenSize[1] and screen.get_at((x, y+1)) != newColor:
+                stack.append((x, y+1))
+
+            if x - 1 > 0 and screen.get_at((x-1, y)) != newColor:
+                stack.append((x-1, y))
+
+            if x + 1 < screenSize[0] and screen.get_at((x+1, y)) != newColor:
+                stack.append((x+1, y))
+
+    except IndexError:
+        return 
+
 if __name__ == '__main__':
     sX = 0
     sY = 0
     line = False
+    color = False
     LEFT = 1
     RIGHT = 3
 
@@ -157,9 +201,22 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEMOTION and line:
                 x, y = event.pos
                 screen.blit(layer, (0,0))
-                drawLine(sX, sY, x, y, RED)
+                #drawLine(sX, sY, x, y, RED)
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT:
                 line = False
-        
+
+                if color:
+                    cX, cY = event.pos
+                    floodFill(cX, cY, RED)
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    color = True
+                    print('color')
+
+            
+        drawSquare(200, 200, 130, RED)
+        #colorir(60,60, BLACK)
+        #floodFill(100,100, RED)
         pygame.display.flip()
