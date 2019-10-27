@@ -164,17 +164,10 @@ def floodFill(x,y, newColor):
             x,y = stack.pop()
             screen.set_at((x,y), newColor)
 
-            if y - 1 > 0 and screen.get_at((x, y-1)) != newColor:
-                stack.append((x, y-1))
-
-            if y + 1 < screenSize[1] and screen.get_at((x, y+1)) != newColor:
-                stack.append((x, y+1))
-
-            if x - 1 > 0 and screen.get_at((x-1, y)) != newColor:
-                stack.append((x-1, y))
-
-            if x + 1 < screenSize[0] and screen.get_at((x+1, y)) != newColor:
-                stack.append((x+1, y))
+            if y - 1 > 0 and screen.get_at((x, y-1)) == prevColor: stack.append((x, y-1))
+            if y + 1 < screenSize[1] and screen.get_at((x, y+1)) == prevColor: stack.append((x, y+1))
+            if x - 1 > 0 and screen.get_at((x-1, y)) == prevColor: stack.append((x-1, y))
+            if x + 1 < screenSize[0] and screen.get_at((x+1, y)) == prevColor: stack.append((x+1, y))
 
     except IndexError:
         return 
@@ -201,7 +194,8 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEMOTION and line:
                 x, y = event.pos
                 screen.blit(layer, (0,0))
-                #drawLine(sX, sY, x, y, RED)
+                r = int((((x - sX)**2) + ((y - sY)**2))**0.5)
+                drawCircle(sX, sY, r, BLACK)
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT:
                 line = False
@@ -213,10 +207,14 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
                     color = True
-                    print('color')
+                    print('color t')
+
+                if event.key == pygame.K_s:
+                    color = False
+                    print('color f')
 
             
-        drawSquare(200, 200, 130, RED)
+        #drawSquare(200, 200, 130, RED)
         #colorir(60,60, BLACK)
         #floodFill(100,100, RED)
         pygame.display.flip()
