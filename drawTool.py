@@ -7,8 +7,13 @@ pygame.init()
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+
+
 screen = pygame.display.set_mode((400, 400), 0, 32)
+layer = pygame.surface.Surface((400,400))
+layer.blit(screen, (0,0))
 screen.fill(WHITE)
+layer.fill(WHITE)
 
 pygame.display.flip()
 
@@ -147,18 +152,14 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONUP and event.button == LEFT:
                 sX, sY = event.pos
                 line = True
+                layer.blit(screen, (0,0))
 
             if event.type == pygame.MOUSEMOTION and line:
-                screen.fill(WHITE)
                 x, y = event.pos
-
-                # Calcula o incremento -> usado pra definir p1 (ponto de controle)
-                increment = int((((x - sX)**2) + ((y - sY)**2))**0.5)
-                drawCurve((sX, sY), (x, y - increment), (x,y), RED)
-                
-                pygame.display.flip()
+                screen.blit(layer, (0,0))
+                drawLine(sX, sY, x, y, RED)
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT:
                 line = False
         
-        pygame.display.update()
+        pygame.display.flip()
