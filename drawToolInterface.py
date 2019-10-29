@@ -86,7 +86,6 @@ class DrawToolInteface:
         pygame.draw.rect(self.drawTool.screen, BLACK, c, 2)
 
         left += 120
-        print(left)
         # Create the button that executes floodFill function
         c = self.unfilledImage.get_rect()
         c.center = (left, 30)
@@ -182,24 +181,23 @@ class DrawToolInteface:
                 if event.type == pygame.MOUSEMOTION and draw:
                     eX, eY = event.pos
 
-                    #if eY <= 65:
-                        # Forbid drawing in the options pallete -> not working properly
-                        #eY = 65
-
                     self.drawTool.screen.blit(self.drawTool.layer, (0,0))
 
                     if self.actualDrawMode == 0:
                         # Draw line
+                        if eY <= 65: eY = 65
                         self.drawTool.drawLine(sX,sY, eX, eY, self.actualColor)
 
                     elif self.actualDrawMode == 1:
                         # Draw circle
                         r = int((((eX - sX)**2) + ((eY - sY)**2))**0.5)
-                        print(r, eX, eY)
+
+                        if sY - r <= 65: r = sY - 66
                         self.drawTool.drawCircle(sX, sY, r, self.actualColor)
 
                     elif self.actualDrawMode == 2:
                         # Draw rectangle
+                        if eY <= 65: eY = 67
                         self.drawTool.drawRectangle(sX, sY, eX, eY, self.actualColor)
 
                     elif self.actualDrawMode == 3:
@@ -210,6 +208,8 @@ class DrawToolInteface:
                     elif self.actualDrawMode == 4:
                         # Draw triangle
                         increment = int((((eX - sX)**2) + ((eY - sY)**2))**0.5)
+
+                        if sY - increment <= 65: increment = sY - 66
                         self.drawTool.drawTriangle(sX, sY, increment, self.actualColor)
 
                     elif self.actualDrawMode == 5:
@@ -219,10 +219,11 @@ class DrawToolInteface:
                     elif self.actualDrawMode == 6:
                         # Draw polyline
                         polyline = True
+
+                        if eY <= 65: eY = 65
                         self.drawTool.drawLine(sX,sY, eX, eY, self.actualColor)
 
-                    else:
-                        continue
+                    else: continue
 
             pygame.display.flip()
 
