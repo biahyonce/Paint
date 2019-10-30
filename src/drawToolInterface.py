@@ -8,8 +8,8 @@ class DrawToolInteface:
         self.actualColor = (0,0,0)
         self.actualDrawMode = 0
         self.prevDrawMode = 0
-        self.filledImage = pygame.image.load('filled.jpg').convert()
-        self.unfilledImage = pygame.image.load('unfilled.jpg')
+        self.filledImage = pygame.image.load('images/filled.jpg').convert()
+        self.unfilledImage = pygame.image.load('images/unfilled.jpg')
 
         # Create the colors
         left = 10
