@@ -2,32 +2,7 @@ import pygame
 import sys
 import numpy as np
 from pygame import gfxdraw
-
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GRAY = (210,210,210)
-LEFT = 1
-RIGHT = 3
-
-colors = [
-    (0,0,0),
-    (255, 0, 0),
-    (0, 255, 0),
-    (255,255,0),
-    (255, 0, 255),
-    (0, 64, 255),
-    (255, 128, 0),
-    (153, 51, 102),
-    (102,102,102),
-    (0, 153,204),
-    (153, 102, 0),
-    (0,0,102),
-    (0, 204, 255),
-    (102, 0, 204),
-    (255,255,204),
-    (51, 153, 102)
-]
+from colorHandler import *
 
 class DrawTool:
     def __init__(self, width=800, height=800):
@@ -61,8 +36,7 @@ class DrawTool:
         while x < limit:
             x = x + 1
 
-            if diX < 0: 
-                diX = diX + 2 * dyAbs
+            if diX < 0: diX = diX + 2 * dyAbs
 
             else:
                 y = y + increment
@@ -89,8 +63,7 @@ class DrawTool:
         while y < limit:
             y = y + 1
 
-            if diY <= 0:
-                diY = diY + 2 * dxAbs
+            if diY <= 0: diY = diY + 2 * dxAbs
 
             else:
                 x = x + increment
@@ -106,11 +79,8 @@ class DrawTool:
         diX = 2 * dyAbs - dxAbs
         diY = 2 * dxAbs - dyAbs
     
-        if dyAbs <= dxAbs:
-            self.drawLineX(x1, y1, x2, y2, color)
-
-        else:
-            self.drawLineY(x1, y1, x2, y2, color)
+        if dyAbs <= dxAbs: self.drawLineX(x1, y1, x2, y2, color)
+        else: self.drawLineY(x1, y1, x2, y2, color)
 
     def drawSquare(self, x1, y1, increment, color):
         self.drawLine(x1, y1, x1, y1 + increment, color)
@@ -155,13 +125,6 @@ class DrawTool:
         self.drawLine(x - increment, y + increment, x, y - increment, color)
         self.drawLine(x + increment, y + increment, x - increment, y + increment, color)
 
-    def drawCurve(self, p1, p2, p3, color):
-        for t in np.arange(0, 1, 0.001):
-            bx = int(p1[0] + (((1 - t) ** 2)*(p1[0] - p2[0])) + ((t**2) * (p3[0] - p1[0])))
-            by = int(p1[1] + (((1 - t) ** 2)*(p1[1] - p2[1])) + ((t**2) * (p3[1] - p1[1])))
-            self.screen.set_at((bx, by), color)
-
-
     def floodFillRecursive(self, x, y, prevColor, newColor):
         try:
             if x < 0 or x > 400 or y < 0 or y > 400: return
@@ -176,6 +139,22 @@ class DrawTool:
 
         except IndexError:
             return
+
+    def drawCurve(self, p0, p1, p2, p3, color):
+        sX, sY = p0
+
+        for t in np.arange(0,1,0.01):
+            b0 = (1-t)**3
+            b1 = 3 * t * (1-t)**2
+            b2 = 3 * t**2 * (1-t)
+            b3 = t**3
+
+            eX = int((b0 * p0[0]) + (b1 * p1[0]) + (b2 * p2[0]) + (b3 * p3[0]))
+            eY = int((b0 * p0[1]) + (b1 * p1[1]) + (b2 * p2[1]) + (b3 * p3[1]))
+            self.drawLine(sX, sY, eX, eY, color)
+            sX,sY = (eX, eY)
+
+        self.drawLine(sX, sY, p3[0], p3[1], color)
 
     def floodFill(self, x,y, newColor):
         try:
@@ -195,4 +174,4 @@ class DrawTool:
                 if x + 1 < self.screenSize[0] and self.screen.get_at((x+1, y)) == prevColor: stack.append((x+1, y))
 
         except IndexError:
-            return 
+            return

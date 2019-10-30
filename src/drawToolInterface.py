@@ -10,6 +10,9 @@ class DrawToolInteface:
         self.prevDrawMode = 0
         self.filledImage = pygame.image.load('images/filled.jpg').convert()
         self.unfilledImage = pygame.image.load('images/unfilled.jpg')
+        self.actualCurve = []
+        self.initialP1 = (150, 300)
+        self.initialP2 = (350, 300)
 
         # Create the colors
         left = 10
@@ -73,7 +76,7 @@ class DrawToolInteface:
         # Create option that draws curves
         c = pygame.Rect(left, 10, 40, 40)
         self.options.append(c)
-        self.drawTool.drawCurve((590, 40),(600, 70), (616, 40), BLACK)
+        self.drawTool.drawCurve((583, 42), (600, 12), (600, 12), (612, 42), BLACK)
         pygame.draw.rect(self.drawTool.screen, BLACK, c, 2)
         
         left += 50
@@ -104,7 +107,7 @@ class DrawToolInteface:
             elif option == 2: self.drawTool.drawRectangle(434, 20, 465, 38, color)
             elif option == 3: self.drawTool.drawSquare(487, 17, 25, color)
             elif option == 4: self.drawTool.drawTriangle(550, 30, 15, color)
-            elif option == 5: self.drawTool.drawCurve((590, 40),(600, 70), (616, 40), color)  
+            elif option == 5: self.drawTool.drawCurve((583, 42), (600, 12), (600, 12), (612, 42), color)  
             else: 
                 self.drawTool.drawLine(632, 46, 640, 30, color)
                 self.drawTool.drawLine(640, 30, 652, 46, color)
@@ -113,6 +116,8 @@ class DrawToolInteface:
     def main(self):
         draw = False
         polyline = False
+        moveP1 = False
+        moveP2 = False
 
         while True:
             for event in pygame.event.get():
@@ -121,7 +126,7 @@ class DrawToolInteface:
                     exit()
                     break
 
-                if event.type == pygame.MOUSEBUTTONUP and event.button == LEFT:
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == LEFT:
                     cX, cY = event.pos
                     
                     # Check if click is within the options pallete
@@ -173,12 +178,60 @@ class DrawToolInteface:
                         sX, sY = event.pos
                         draw = True
                         self.drawTool.layer.blit(self.drawTool.screen, (0,0))
+
+                        if len(self.actualCurve) > 0: self.actualCurve = []
                 
-                if event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT:
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT and draw:
                     draw = False
                     polyline = False
 
-                if event.type == pygame.MOUSEMOTION and draw:
+                    if self.actualDrawMode == 5:
+                        # In case of curve, save the actual curve
+                        self.actualCurve = [(sX, sY), self.initialP1, self.initialP2, (eX, eY)] 
+                
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT and not draw and not moveP1 and not moveP2:
+                    # Enable moviment of P1 or P2
+                    x,y = event.pos
+                    
+                    if len(self.actualCurve) > 0:
+                        if x >= self.actualCurve[1][0] and x <= self.actualCurve[1][0] + 5 and y >= self.actualCurve[1][1] and y <= self.actualCurve[1][1] + 5:
+                            moveP1 = True
+                            moveP2 = False
+
+                        elif x >= self.actualCurve[2][0] and x <= self.actualCurve[2][0] + 5 and y >= self.actualCurve[2][1] and y <= self.actualCurve[2][1] + 5:
+                            moveP1 = False
+                            moveP2 = True
+                
+                elif event.type == pygame.MOUSEMOTION and not draw:
+                    # Move P1 or P2
+                    if moveP1:
+                        x,y = event.pos
+
+                        if y <= 65: y = 65
+
+                        self.actualCurve[1] = (x,y)
+                        self.drawTool.screen.blit(self.drawTool.layer, (0,0))
+                        self.drawTool.drawCurve(self.actualCurve[0], self.actualCurve[1], self.actualCurve[2], self.actualCurve[3], self.actualColor)
+                        self.drawTool.drawSquare(self.actualCurve[1][0], self.actualCurve[1][1], 5, RED)
+                        self.drawTool.drawSquare(self.actualCurve[2][0], self.actualCurve[2][1], 5, RED)
+
+                    elif moveP2:
+                        x,y = event.pos
+
+                        if y <= 65: y = 65
+
+                        self.actualCurve[2] = (x,y)
+                        self.drawTool.screen.blit(self.drawTool.layer, (0,0))
+                        self.drawTool.drawCurve(self.actualCurve[0], self.actualCurve[1], self.actualCurve[2], self.actualCurve[3], self.actualColor)
+                        self.drawTool.drawSquare(self.actualCurve[1][0], self.actualCurve[1][1], 5, RED)
+                        self.drawTool.drawSquare(self.actualCurve[2][0], self.actualCurve[2][1], 5, RED)
+
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == RIGHT:
+                    # Disable the moviment from P1 or P2
+                    if moveP1: moveP1 = False
+                    elif moveP2: moveP2 = False
+
+                elif event.type == pygame.MOUSEMOTION and draw and not moveP1 and not moveP2:
                     eX, eY = event.pos
 
                     self.drawTool.screen.blit(self.drawTool.layer, (0,0))
@@ -214,7 +267,12 @@ class DrawToolInteface:
 
                     elif self.actualDrawMode == 5:
                         # Draw curve
-                        pass
+                        if eY <= 65: eY = 65
+                        self.initialP1 = (sX, sY)
+                        self.initialP2 = (eX, eY)
+                        self.drawTool.drawCurve((sX, sY), self.initialP1, self.initialP2, (eX, eY), self.actualColor)
+                        self.drawTool.drawSquare(self.initialP1[0], self.initialP1[1], 5, RED)
+                        self.drawTool.drawSquare(self.initialP2[0], self.initialP2[1], 5, RED)
 
                     elif self.actualDrawMode == 6:
                         # Draw polyline
