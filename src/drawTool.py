@@ -120,25 +120,10 @@ class DrawTool:
         self.screen.set_at((y1 + x2, y2 - x1), color)
         self.screen.set_at((y1 + x2, x1 + y2), color)
 
-    def drawTriangle(self, x, y, increment, color):
-        self.drawLine(x, y - increment, x + increment,  y + increment, color)
-        self.drawLine(x - increment, y + increment, x, y - increment, color)
-        self.drawLine(x + increment, y + increment, x - increment, y + increment, color)
-
-    def floodFillRecursive(self, x, y, prevColor, newColor):
-        try:
-            if x < 0 or x > 400 or y < 0 or y > 400: return
-            if self.screen.get_at((x,y)) != prevColor: return
-
-            self.screen.set_at((x,y), newColor)
-
-            self.floodFill(x+1,y, newColor)
-            self.floodFill(x,y+1, newColor)
-            self.floodFill(x-1,y, newColor)
-            self.floodFill(x,y-1, newColor)
-
-        except IndexError:
-            return
+    def drawTriangle(self, x1, y1, increment, color):
+        self.drawLine(x1, y1 - increment, x1 + increment,  y1 + increment, color)
+        self.drawLine(x1 - increment, y1 + increment, x1, y1 - increment, color)
+        self.drawLine(x1 + increment, y1 + increment, x1 - increment, y1 + increment, color)
 
     def drawCurve(self, p0, p1, p2, p3, color):
         sX, sY = p0
