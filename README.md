@@ -23,15 +23,16 @@ After that, click anywhere on the screen using the right button to define the en
 
 #### `Curve`
 ```
-Click anywhere on the screen using the left button to define the start point of the curve, at the beginning 
-a curve with curvature equal to 0 (segment) will be drawn. Then, move the cursor around to choose the size 
-of the curve. After that, click anywhere on the screen using the right button to define the end point of 
-the curve. Next, when the curve with curvature equal to 0 is drawn, two red squares will be shown 
-indicating the control points of the curve. To change the position of the control points and therefore the 
-shape of the curve, just click on any of the squares using the right button and then drag the mouse around 
-to change the position of the control point. After that, click anywhere on the screen using the right button 
-to determine the control point location. Once a new curve begin to be drawn, it won't be possible to change 
-the shape of the previous curve. 
+Click anywhere on the screen using the left button to define the start point of the curve, at the 
+beginning a curve with curvature equal to 0 (segment) will be drawn. Then, move the cursor around
+to choose the size of the curve. After that, click anywhere on the screen using the right button 
+to define the end point of the curve. Next, when the curve with curvature equal to 0 is drawn, 
+two red squares will be shown indicating the control points of the curve. To change the position 
+of the control points and therefore the shape of the curve, just click on any of the squares 
+using the right button and then drag the mouse around to change the position of the control point. 
+After that, click anywhere on the screen using the right button to determine the control point 
+location. Once a new curve begin to be drawn, it won't be possible to change the shape
+of the previous curve. 
 ```
 
 #### `Polyline`
