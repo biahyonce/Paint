@@ -156,22 +156,42 @@ class DrawTool:
 
         self.drawLine(sX, sY, p3[0], p3[1], color)
 
-    def floodFill(self, x,y, newColor):
+    def floodFill(self, x, y, width, height, newColor):
         try:
             prevColor = self.screen.get_at((x,y))
 
             if prevColor == newColor: return
-
             stack = [(x,y)]
+            scanUp = scanDown = False
 
             while stack:
-                x,y = stack.pop()
-                self.screen.set_at((x,y), newColor)
+                x, y = stack.pop()
+                x1 = x
 
-                if y - 1 > 0 and self.screen.get_at((x, y-1)) == prevColor: stack.append((x, y-1))
-                if y + 1 < self.screenSize[1] and self.screen.get_at((x, y+1)) == prevColor: stack.append((x, y+1))
-                if x - 1 > 0 and self.screen.get_at((x-1, y)) == prevColor: stack.append((x-1, y))
-                if x + 1 < self.screenSize[0] and self.screen.get_at((x+1, y)) == prevColor: stack.append((x+1, y))
+                while x1 >= 0 and self.screen.get_at((x1, y)) == prevColor: 
+                    x1 = x1 - 1
+
+                x1 = x1 + 1
+                scanUp = scanDown = False
+
+                while x1 < width and self.screen.get_at((x1, y)) == prevColor:
+                    self.screen.set_at((x1, y), newColor)
+
+                    if not scanUp and y > 0 and self.screen.get_at((x1, y-1)) == prevColor:
+                        stack.append((x1, y-1))
+                        scanUp = True
+
+                    elif scanUp and y > 0 and self.screen.get_at((x1, y-1)) != prevColor:
+                        scanUp = False
+
+                    if not scanDown and y < height-1 and self.screen.get_at((x1, y+1)) == prevColor:
+                        stack.append((x1, y+1))
+                        scanDown = True
+
+                    elif scanDown and y < height-1 and self.screen.get_at((x1, y+1)) != prevColor:
+                        scanDown = False
+                    
+                    x1 = x1 + 1
 
         except IndexError:
             return

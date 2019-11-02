@@ -112,6 +112,19 @@ class DrawToolInteface:
                 self.drawTool.drawLine(632, 46, 640, 30, color)
                 self.drawTool.drawLine(640, 30, 652, 46, color)
                 self.drawTool.drawLine(652, 46, 661, 18, color)
+        else:
+            # Only works for option 7 (floodFill)
+            if color == RED:
+                c = self.filledImage.get_rect()
+                c.center = (750, 30)
+                self.options[7] = (c, RED)
+                self.drawTool.screen.blit(self.filledImage, c)
+
+            elif color == BLACK:
+                c = self.unfilledImage.get_rect()
+                c.center = (750, 30)
+                self.options[7] = (c, BLACK)
+                self.drawTool.screen.blit(self.unfilledImage, c)
 
     def main(self):
         draw = False
@@ -131,7 +144,6 @@ class DrawToolInteface:
                     
                     # Check if click is within the options pallete
                     if cY <= 65:
-                        print('OPTIONS', event.pos)
                         # Change the color of the actual color
                         for i in range(0, 16):
                             if self.colorButton[i][0].collidepoint(event.pos):
@@ -172,7 +184,7 @@ class DrawToolInteface:
                     elif self.actualDrawMode == 7:
                         # Execute flood fill
                         cX, cY = event.pos
-                        self.drawTool.floodFill(cX, cY, self.actualColor)
+                        self.drawTool.floodFill(cX, cY, self.drawTool.screenSize[0], self.drawTool.screenSize[1], self.actualColor)
 
                     else:
                         sX, sY = event.pos
